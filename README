@@ -1,0 +1,26 @@
+PREREQUISITES
+-------------
+
+ImageMagic needs to be installed
+PHP 5.3 needs to be installed
+Osmosis needs to be in ../osmosis-0.39/bin (as binary name "osmosis")
+
+SETUP
+-----
+
+1. Rename config.txt.example to config.txt, and edit config.txt. The format
+   needs to be exactly like it is!
+   Also make sure that LAT1 < LAT2 and LON1 < LON2.
+   The bounding box for "osmosis" needs to be about twice as larger as 
+   the bounding box for "edits" (through LAT1, LAT2, LON1, LON2)
+2. Run ./setup.sh
+3. Get a matching state file from http://planet.openstreetmap.org/redaction-period/minute-replicate
+   - typically one that's a day from before the time for the planet file.
+4. Edit "configuration.txt" and make it:
+
+	baseUrl=http://planet.openstreetmap.org/redaction-period/minute-replicate
+	maxInterval = 900
+
+5. Put a 900x472 pixel image in config/title-image.jpg
+6. run (in the root): ./create-artwork.sh
+7. run "./update.sh" once to make check whether it works.

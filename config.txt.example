@@ -1,0 +1,8 @@
+name=Shoreditch Mapping Party
+# osmosis
+bbox=left=-0.11 right=-0.04 top=51.54 bottom=51.50
+# edits
+LAT1=-0.08525
+LAT2=-0.07168
+LON1=51.518
+LON2=51.5308
