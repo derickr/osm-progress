@@ -1,0 +1,9 @@
+*.swp
+artwork/
+config.txt
+config/
+configuration.txt
+download.lock
+great_britain.osm.pbf
+party.osm
+state.txt
