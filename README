@@ -15,14 +15,20 @@ SETUP
    the bounding box for "edits" (through LAT1, LAT2, LON1, LON2)
 2. Run ./setup.sh
 3. Get a matching state file from
-   http://planet.openstreetmap.org/redaction-period/minute-replicate
+   http://planet.openstreetmap.org/replication/minute
    Typically one that's a day from before the time for the planet file and
    save it as "state.txt"
 4. Edit "configuration.txt" and make it:
 
-	baseUrl=http://planet.openstreetmap.org/redaction-period/minute-replicate
+	baseUrl=http://planet.openstreetmap.org/replication/minute
 	maxInterval = 900
 
-5. Put a 900x472 pixel image in config/title-image.jpg
-6. run (in the root): ./create-artwork.sh
-7. run "./update.sh" once to make check whether it works.
+5. run "./update.sh" once to make check whether it works.
+
+Repeat this until the end of the mapping period.
+
+Then to create the video:
+
+1. Put a 900x472 pixel image in config/title-image.jpg
+2. run (in the root): ./create-artwork.sh
+3. run ./generate.sh
