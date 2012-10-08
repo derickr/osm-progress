@@ -6,4 +6,15 @@ configuration.txt
 download.lock
 great_britain.osm.pbf
 party.osm
+party-new.osm
 state.txt
+
+backup/
+changes/
+dumps/
+images/
+
+end.avi
+middle.avi
+progress.avi
+title.avi
