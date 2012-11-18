@@ -13,6 +13,6 @@ LON2=`cat config.txt | grep "LON2=" | cut -d "=" -f 2-`
 
 php de-dup.php
 PATH=${EXTRA_PATH}:${PATH}  php changes.php dumps changes
-php editpoints.php changes $LON2 $LAT2 $LON1 $LAT1
+php -dmemory_limit=2G editpoints.php changes $LON2 $LAT2 $LON1 $LAT1
 ./mapniks.sh
 ./mkfilm.sh
