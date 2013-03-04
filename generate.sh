@@ -1,7 +1,7 @@
 EXTRA_PATH=/home/derick/install/osmosis-0.39/bin
 
 # NEVER rm -rf changes/*osc
-#rm -rf changes/*json 
+#rm -rf changes/*json changes/cache*
 #rm -rf changes/*env changes/*png
 #rm -rf images/x-*
 #rm -rf images/*

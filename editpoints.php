@@ -3,9 +3,27 @@ require '/home/derick/dev/osm-tools/lib/getinfo.php';
 require '/home/derick/dev/osm-tools/lib/gpx.php';
 define('WIDTH', 1280);
 define('HEIGHT', 720);
+$DO_ZOOM = $DO_POINTS = $DO_GPX = true;
 
-define('ZOOMINNESS', 12);
+$config = file_get_contents( 'config.txt' );
+
+if ( preg_match("@ZOOM=(\d+)@", $config, $m ) )
+{
+	$DO_ZOOM = ( $m[1] == '1' );
+}
+if ( preg_match("@POINTS=(\d+)@", $config, $m ) )
+{
+	$DO_POINTS = ( $m[1] == '1' );
+}
+if ( preg_match("@GPX=(\d+)@", $config, $m ) )
+{
+	$DO_GPX = ( $m[1] == '1' );
+}
+
+define('ZOOMINNESS', 24);
 define('ZOOMOUTNESS', 30);
+
+
 
 $files = glob($argv[1] . '/*.osc');
 if ( isset( $argv[5] ) )
@@ -32,22 +50,44 @@ foreach ( $gpxFiles as $gpxFile )
 
 
 // points
-$points = array();
-$lastFile = NULL;
-
-foreach ( $files as $file )
+$points = $pointInfo['points'] = array();
+if ( $DO_POINTS )
 {
-	preg_match( "@^{$argv[1]}/([a-z]*)-([0-9]{8}-[0-9]{4})@", $file, $m );
-	$pointInfo = getEditPoints( $argv[1], $m[2], $filter );
+	$lastFile = NULL;
+	$needToFetchCacheFileName = NULL;
 
-	if ( $pointInfo['meta']['lonMin'] < $bounds['lonMin'] ) { $bounds['lonMin'] = $pointInfo['meta']['lonMin']; }
-	if ( $pointInfo['meta']['lonMax'] > $bounds['lonMax'] ) { $bounds['lonMax'] = $pointInfo['meta']['lonMax']; }
-	if ( $pointInfo['meta']['latMin'] < $bounds['latMin'] ) { $bounds['latMin'] = $pointInfo['meta']['latMin']; }
-	if ( $pointInfo['meta']['latMax'] > $bounds['latMax'] ) { $bounds['latMax'] = $pointInfo['meta']['latMax']; }
-	if ( $pointInfo['meta']['tsMin'] < $bounds['tsMin'] ) { $bounds['tsMin'] = $pointInfo['meta']['tsMin']; }
-	if ( $pointInfo['meta']['tsMax'] > $bounds['tsMax'] ) { $bounds['tsMax'] = $pointInfo['meta']['tsMax']; }
+	foreach ( $files as $file )
+	{
+		preg_match( "@^{$argv[1]}/([a-z]*)-([0-9]{8}-[0-9]{4})@", $file, $m );
+		$cacheFileName = "changes/cache-{$m[2]}.serialize";
 
-	$points = array_merge( $points, $pointInfo['points'] );
+		if ( file_exists( $cacheFileName ) )
+		{
+			echo "Skipping bounds merging for $file\n";
+			$needToFetchCacheFileName = $cacheFileName;
+			continue;
+		}
+
+		if ( $needToFetchCacheFileName )
+		{
+			$points = unserialize( file_get_contents( $needToFetchCacheFileName ) );
+			$needToFetchCacheFileName = NULL;
+		}
+
+		echo "Bounds merging for $file\n";
+
+		$pointInfo = getEditPoints( $argv[1], $m[2], $filter );
+
+		if ( $pointInfo['meta']['lonMin'] < $bounds['lonMin'] ) { $bounds['lonMin'] = $pointInfo['meta']['lonMin']; }
+		if ( $pointInfo['meta']['lonMax'] > $bounds['lonMax'] ) { $bounds['lonMax'] = $pointInfo['meta']['lonMax']; }
+		if ( $pointInfo['meta']['latMin'] < $bounds['latMin'] ) { $bounds['latMin'] = $pointInfo['meta']['latMin']; }
+		if ( $pointInfo['meta']['latMax'] > $bounds['latMax'] ) { $bounds['latMax'] = $pointInfo['meta']['latMax']; }
+		if ( $pointInfo['meta']['tsMin'] < $bounds['tsMin'] ) { $bounds['tsMin'] = $pointInfo['meta']['tsMin']; }
+		if ( $pointInfo['meta']['tsMax'] > $bounds['tsMax'] ) { $bounds['tsMax'] = $pointInfo['meta']['tsMax']; }
+
+		$points = array_merge( $points, $pointInfo['points'] );
+		file_put_contents( $cacheFileName, serialize ( $points ) );
+	}
 }
 
 if ( count( $pointInfo['points'] ) == 0 )
@@ -84,54 +124,57 @@ $maxBoxes = 5;
 
 foreach ( $files as $file )
 {
-	// read edit bounds
 	preg_match( "@^{$argv[1]}/([a-z]*)-([0-9]{8}-[0-9]{4})@", $file, $m );
-	$newBbox = (array) json_decode( file_get_contents( $argv[1] . DIRECTORY_SEPARATOR . 'editbbox-' . $m[2] . '.json' ) );
+	if ( $DO_ZOOM )
+	{
+		// read edit bounds
+		$newBbox = (array) json_decode( file_get_contents( $argv[1] . DIRECTORY_SEPARATOR . 'editbbox-' . $m[2] . '.json' ) );
 
-	if ($newBbox['latMin'] != 90) {
-		for ( $i = $maxBoxes; $i > 0; $i-- )
-		{
-			if ( isset( $editBbox[$i - 1] ) )
+		if ($newBbox['latMin'] != 90) {
+			for ( $i = $maxBoxes; $i > 0; $i-- )
 			{
-				$editBbox[$i] = $editBbox[$i - 1];
+				if ( isset( $editBbox[$i - 1] ) )
+				{
+					$editBbox[$i] = $editBbox[$i - 1];
+				}
 			}
+			$editBbox[0] = $newBbox;
+			$nothing = 0;
+		} else {
+			$nothing++;
 		}
-		$editBbox[0] = $newBbox;
-		$nothing = 0;
-	} else {
-		$nothing++;
-	}
-	if ($nothing > 50) {
-		for ( $i = $maxBoxes; $i > 0; $i-- )
-		{
-			if ( isset( $editBbox[$i - 1] ) )
+		if ($nothing > 50) {
+			for ( $i = $maxBoxes; $i > 0; $i-- )
 			{
-				$editBbox[$i] = $editBbox[$i - 1];
+				if ( isset( $editBbox[$i - 1] ) )
+				{
+					$editBbox[$i] = $editBbox[$i - 1];
+				}
 			}
+			$editBbox[0] = array(
+				'lonMin' => ($bounds['lonMin'] + ((ZOOMOUTNESS - 1) * $calculated['lonMin'])) / ZOOMOUTNESS,
+				'latMin' => ($bounds['latMin'] + ((ZOOMOUTNESS - 1) * $calculated['latMin'])) / ZOOMOUTNESS,
+				'lonMax' => ($bounds['lonMax'] + ((ZOOMOUTNESS - 1) * $calculated['lonMax'])) / ZOOMOUTNESS,
+				'latMax' => ($bounds['latMax'] + ((ZOOMOUTNESS - 1) * $calculated['latMax'])) / ZOOMOUTNESS,
+			);
 		}
-		$editBbox[0] = array(
-			'lonMin' => ($bounds['lonMin'] + ((ZOOMOUTNESS - 1) * $calculated['lonMin'])) / ZOOMOUTNESS,
-			'latMin' => ($bounds['latMin'] + ((ZOOMOUTNESS - 1) * $calculated['latMin'])) / ZOOMOUTNESS,
-			'lonMax' => ($bounds['lonMax'] + ((ZOOMOUTNESS - 1) * $calculated['lonMax'])) / ZOOMOUTNESS,
-			'latMax' => ($bounds['latMax'] + ((ZOOMOUTNESS - 1) * $calculated['latMax'])) / ZOOMOUTNESS,
+
+		$lonMin = $latMin = 180;
+		$lonMax = $latMax = -180;
+		foreach ( $editBbox as $box )
+		{
+			$lonMin = $box['lonMin'] < $lonMin ? $box['lonMin'] : $lonMin;
+			$latMin = $box['latMin'] < $latMin ? $box['latMin'] : $latMin;
+			$lonMax = $box['lonMax'] > $lonMax ? $box['lonMax'] : $lonMax;
+			$latMax = $box['latMax'] > $latMax ? $box['latMax'] : $latMax;
+		}
+		$calculated = array(
+			'lonMin' => ($lonMin + ((ZOOMINNESS - 1) * $calculated['lonMin'])) / ZOOMINNESS,
+			'latMin' => ($latMin + ((ZOOMINNESS - 1) * $calculated['latMin'])) / ZOOMINNESS,
+			'lonMax' => ($lonMax + ((ZOOMINNESS - 1) * $calculated['lonMax'])) / ZOOMINNESS,
+			'latMax' => ($latMax + ((ZOOMINNESS - 1) * $calculated['latMax'])) / ZOOMINNESS,
 		);
 	}
-
-	$lonMin = $latMin = 180;
-	$lonMax = $latMax = -180;
-	foreach ( $editBbox as $box )
-	{
-		$lonMin = $box['lonMin'] < $lonMin ? $box['lonMin'] : $lonMin;
-		$latMin = $box['latMin'] < $latMin ? $box['latMin'] : $latMin;
-		$lonMax = $box['lonMax'] > $lonMax ? $box['lonMax'] : $lonMax;
-		$latMax = $box['latMax'] > $latMax ? $box['latMax'] : $latMax;
-	}
-	$calculated = array(
-		'lonMin' => ($lonMin + ((ZOOMINNESS - 1) * $calculated['lonMin'])) / ZOOMINNESS,
-		'latMin' => ($latMin + ((ZOOMINNESS - 1) * $calculated['latMin'])) / ZOOMINNESS,
-		'lonMax' => ($lonMax + ((ZOOMINNESS - 1) * $calculated['lonMax'])) / ZOOMINNESS,
-		'latMax' => ($latMax + ((ZOOMINNESS - 1) * $calculated['latMax'])) / ZOOMINNESS,
-	);
 	writeBounds( $calculated, $argv[1] . DIRECTORY_SEPARATOR . 'diff-' . $m[2] . '.env' );
 
 	$area = array('current' => $editBbox, 'calculated' => $calculated );
@@ -144,20 +187,24 @@ foreach ( $files as $file )
 
 	if ( !file_exists( $fname ) )
 	{
-		echo $fname, "\n";
+		echo "Rendering $fname\n";
 		renderPoints($points, $bounds, $ts, $fname, $calculated, $gpxPoints);
+	}
+	else
+	{
+		echo "Skipping $fname\n";
 	}
 }
 
 function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 {
 	list($west, $south, $east, $north) = explode( ' ', exec( "./correct-coords.py {$bounds['lonMin']} {$bounds['latMin']} {$bounds['lonMax']} {$bounds['latMax']}" ) );
-	
+
 	$dWidth =  WIDTH / ($east - $west);
 	$dHeight = HEIGHT / ($north - $south);
 	// normal points
 	$fadeOff = 30; // 60 AAA
-	$tsMin = $ts - 43200; // 12 hours
+	$tsMin = $ts - (30 * 86400); // 1 month
 	$tsMax = $ts;
 	$dTime = $fadeOff / ($tsMax - $tsMin);
 	$dSize = 3 / ($tsMax - $tsMin);
@@ -196,68 +243,61 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 	}
 	$past = imagecolorallocate($img, 127, 0, 0);
 
-	imagesetthickness( $img, 2 );
-	foreach ( $gpxPoints as $key => $node )
+
+	if ( $GLOBALS['DO_POINTS'] )
 	{
-		if ( $key > 0 && $node['ts'] >= $gpxTsMin && $node['ts'] <= $gpxTsMax )
+		imagesetthickness( $img, 2 );
+
+		if ( $GLOBALS['DO_GPX'] )
 		{
-			$c2 = (int) ($node['ts'] - $gpxTsMin) * $gpxDTime;
-			if (
-				(abs($gpxPoints[$key-1]['lon'] - $node['lon']) < 0.001) &&
-				(abs($gpxPoints[$key-1]['lat'] - $node['lat']) < 0.001)
-			) {
-				imageline($img,
-					($gpxPoints[$key-1]['lon'] - $west) * $dWidth, ($north - $gpxPoints[$key-1]['lat']) * $dHeight,
-					($node['lon'] - $west) * $dWidth, ($north - $node['lat']) * $dHeight,
-					$gpxColour[$node['uid'] % count( $colorDefs )][$c2]
+			foreach ( $gpxPoints as $key => $node )
+			{
+				if ( $key > 0 && $node['ts'] >= $gpxTsMin && $node['ts'] <= $gpxTsMax )
+				{
+					$c2 = (int) ($node['ts'] - $gpxTsMin) * $gpxDTime;
+					if (
+						(abs($gpxPoints[$key-1]['lon'] - $node['lon']) < 0.001) &&
+						(abs($gpxPoints[$key-1]['lat'] - $node['lat']) < 0.001)
+					) {
+						imageline($img,
+							($gpxPoints[$key-1]['lon'] - $west) * $dWidth, ($north - $gpxPoints[$key-1]['lat']) * $dHeight,
+							($node['lon'] - $west) * $dWidth, ($north - $node['lat']) * $dHeight,
+							$gpxColour[$node['uid'] % count( $colorDefs )][$c2]
+						);
+					}
+				}
+			}
+		}
+
+		imagesetthickness( $img, 1 );
+
+		foreach ( $points as $node )
+		{
+			if ( $node[2] >= $tsMin && $node[2] <= $tsMax )
+			{
+				$c1 = 60 - ($node[2] - $tsMin) * $dTime; // AAA
+				$c1 = 30 - ($node[2] - $tsMin) * $dTime;
+				$c2 = (int) ($node[2] - $tsMin) * $dTime;
+				imageellipse($img,
+					($node[1] - $west) * $dWidth,
+					($north - $node[0]) * $dHeight,
+					10 + $c1, 10 + $c1,
+					$colour[$node[3] % count( $colorDefs )][$c2]
 				);
+				imageellipse($img,
+					($node[1] - $west) * $dWidth,
+					($north - $node[0]) * $dHeight,
+					9.5 + $c1, 9.5 + $c1,
+					$colour[$node[3] % count( $colorDefs )][$c2]
+				);
+			}
+			else if ( $node[2] < $tsMin )
+			{
+	//			imagefilledellipse($img, ($node[1] - $west) * $dWidth, ($north - $node[0]) * $dHeight, 3, 3, $past);
 			}
 		}
 	}
-	imagesetthickness( $img, 1 );
 
-	foreach ( $points as $node )
-	{
-		if ( $node[2] >= $tsMin && $node[2] <= $tsMax )
-		{
-			$c1 = 60 - ($node[2] - $tsMin) * $dTime; // AAA
-			$c1 = 30 - ($node[2] - $tsMin) * $dTime;
-			$c2 = (int) ($node[2] - $tsMin) * $dTime;
-			imageellipse($img,
-				($node[1] - $west) * $dWidth,
-				($north - $node[0]) * $dHeight,
-				10 + $c1, 10 + $c1,
-				$colour[$node[3] % count( $colorDefs )][$c2]
-			);
-			imageellipse($img,
-				($node[1] - $west) * $dWidth,
-				($north - $node[0]) * $dHeight,
-				9.5 + $c1, 9.5 + $c1,
-				$colour[$node[3] % count( $colorDefs )][$c2]
-			);
-		}
-		else if ( $node[2] < $tsMin )
-		{
-//			imagefilledellipse($img, ($node[1] - $west) * $dWidth, ($north - $node[0]) * $dHeight, 3, 3, $past);
-		}
-	}
-/*
-	// draw bounds
-	imageline($img,
-		($bounds['lonMin'] - $west) * $dWidth,
-		($north - $bounds['latMin']) * $dHeight,
-		($bounds['lonMax'] - $west) * $dWidth,
-		($north - $bounds['latMin']) * $dHeight,
-		$blue
-	);
-	imageline($img,
-		($bounds['lonMin'] - $west) * $dWidth,
-		($north - $bounds['latMax']) * $dHeight,
-		($bounds['lonMax'] - $west) * $dWidth,
-		($north - $bounds['latMax']) * $dHeight,
-		$blue
-	);
-*/
 	/* Render date */
 	imagestring($img, 4, 10, HEIGHT - 20, date_create("@$ts")->format( "F jS, Y - H:i"), $blue);
 	imagepng($img, $filename, 9);
@@ -265,6 +305,7 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 
 function getEditPoints( $dir, $file, $filter )
 {
+	echo "- Reading points\n";
 	$sxe = simplexml_load_file( $dir . DIRECTORY_SEPARATOR . 'diff-' . $file . '.osc' );
 	$pointInfo = \OSM\getInfo::getEditPoints( $sxe, $filter );
 	file_put_contents( $dir . DIRECTORY_SEPARATOR . 'editbbox-' . $file . '.json', json_encode( $pointInfo['meta'] ) );

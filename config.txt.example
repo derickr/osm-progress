@@ -6,3 +6,9 @@ LAT1=-0.08525
 LAT2=-0.07168
 LON1=51.518
 LON2=51.5308
+# don't change those after you have run ./generate.sh
+ZOOMINFACTOR=12
+ZOOMOUTFACTOR=30
+ZOOM=0
+POINTS=1
+GPX=0
