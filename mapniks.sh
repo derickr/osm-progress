@@ -2,10 +2,10 @@
 
 mkdir -p images
 
-LAT1=`cat config.txt | grep "LAT1=" | cut -d "=" -f 2-`
-LAT2=`cat config.txt | grep "LAT2=" | cut -d "=" -f 2-`
-LON1=`cat config.txt | grep "LON1=" | cut -d "=" -f 2-`
-LON2=`cat config.txt | grep "LON2=" | cut -d "=" -f 2-`
+export LAT1=`cat config.txt | grep "LAT1=" | cut -d "=" -f 2-`
+export LAT2=`cat config.txt | grep "LAT2=" | cut -d "=" -f 2-`
+export LON1=`cat config.txt | grep "LON1=" | cut -d "=" -f 2-`
+export LON2=`cat config.txt | grep "LON2=" | cut -d "=" -f 2-`
 
 LASTSIZE="0"
 
@@ -19,7 +19,7 @@ for i in dumps/*osm.gz; do
 		NEWSIZE=`stat -c "%s" $i`
 		if test $NEWSIZE -ne $LASTSIZE; then
 			echo "Loading $i";
-			/home/derick/install/osm2pgsql/osm2pgsql -S /home/derick/install/osm2pgsql/default.style --slim -d gis -C 2400 $i
+			osm2pgsql -S /home/derick/install/osm2pgsql/default.style --slim -d gis -C 2400 $i
 			COUNTSAME="1"
 		else
 			echo "Skipping $i";
