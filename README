@@ -3,7 +3,9 @@ PREREQUISITES
 
 ImageMagic needs to be installed
 PHP 5.3 needs to be installed
-Osmosis needs to be in ../osmosis-0.39/bin (as binary name "osmosis")
+Osmosis needs to be in ../osmosis-latest/bin (as binary name "osmosis")
+You need to have a full rendering stack setup...
+You can only start use this before the changes happen.
 
 SETUP
 -----
