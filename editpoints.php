@@ -20,8 +20,8 @@ if ( preg_match("@GPX=(\d+)@", $config, $m ) )
 	$DO_GPX = ( $m[1] == '1' );
 }
 
-define('ZOOMINNESS', 24);
-define('ZOOMOUTNESS', 30);
+define('ZOOMINNESS', 50);
+define('ZOOMOUTNESS', 50);
 
 
 
@@ -203,8 +203,8 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 	$dWidth =  WIDTH / ($east - $west);
 	$dHeight = HEIGHT / ($north - $south);
 	// normal points
-	$fadeOff = 30; // 60 AAA
-	$tsMin = $ts - (30 * 86400); // 1 month
+	$fadeOff = 15; // 60 AAA
+	$tsMin = $ts - (1 * 86400); // 30 day
 	$tsMax = $ts;
 	$dTime = $fadeOff / ($tsMax - $tsMin);
 	$dSize = 3 / ($tsMax - $tsMin);
@@ -275,8 +275,7 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 		{
 			if ( $node[2] >= $tsMin && $node[2] <= $tsMax )
 			{
-				$c1 = 60 - ($node[2] - $tsMin) * $dTime; // AAA
-				$c1 = 30 - ($node[2] - $tsMin) * $dTime;
+				$c1 = 15 - ($node[2] - $tsMin) * $dTime;
 				$c2 = (int) ($node[2] - $tsMin) * $dTime;
 				imageellipse($img,
 					($node[1] - $west) * $dWidth,
