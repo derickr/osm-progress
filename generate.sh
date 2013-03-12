@@ -6,13 +6,13 @@ EXTRA_PATH=/home/derick/install/osmosis-0.39/bin
 #rm -rf images/x-*
 #rm -rf images/*
 
-LAT1=`cat config.txt | grep "LAT1=" | cut -d "=" -f 2-`
-LAT2=`cat config.txt | grep "LAT2=" | cut -d "=" -f 2-`
-LON1=`cat config.txt | grep "LON1=" | cut -d "=" -f 2-`
-LON2=`cat config.txt | grep "LON2=" | cut -d "=" -f 2-`
+export LAT1=`cat config.txt | grep "LAT1=" | cut -d "=" -f 2-`
+export LAT2=`cat config.txt | grep "LAT2=" | cut -d "=" -f 2-`
+export LON1=`cat config.txt | grep "LON1=" | cut -d "=" -f 2-`
+export LON2=`cat config.txt | grep "LON2=" | cut -d "=" -f 2-`
 
 php de-dup.php
 PATH=${EXTRA_PATH}:${PATH}  php changes.php dumps changes
-php -dmemory_limit=2G editpoints.php changes $LON2 $LAT2 $LON1 $LAT1
+php -dmemory_limit=2G editpoints.php changes $LAT1 $LON2 $LAT2 $LON1
 ./mapniks.sh
 ./mkfilm.sh
