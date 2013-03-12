@@ -304,8 +304,9 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 
 function getEditPoints( $dir, $file, $filter )
 {
-	echo "- Reading points\n";
-	$sxe = simplexml_load_file( $dir . DIRECTORY_SEPARATOR . 'diff-' . $file . '.osc' );
+	$filename = $dir . DIRECTORY_SEPARATOR . 'diff-' . $file . '.osc';
+	echo "- Reading points from '$filename'\n";
+	$sxe = simplexml_load_file( $filename );
 	$pointInfo = \OSM\getInfo::getEditPoints( $sxe, $filter );
 	file_put_contents( $dir . DIRECTORY_SEPARATOR . 'editbbox-' . $file . '.json', json_encode( $pointInfo['meta'] ) );
 	return $pointInfo;
