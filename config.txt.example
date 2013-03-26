@@ -1,15 +1,15 @@
-name=Shoreditch Mapping Party
+name=Galway building tracing
 # osmosis
-bbox=left=-0.11 right=-0.04 top=51.54 bottom=51.50
+bbox=left=-9.31 right=-8.74 top=53.40 bottom=53.16
 poly=mali.poly
-# edits, make sure LON1 < LON2 and LAT1 < LAT2
-LAT1=-0.08525
-LAT2=-0.07168
-LON1=51.518
-LON2=51.5308
+# edits, make sure LON1 < LON2 and LAT1 > LAT2
+LON1=-9.1554
+LON2=-9.0048
+LAT1=53.3102
+LAT2=53.2350
 # don't change those after you have run ./generate.sh
-ZOOMINFACTOR=12
-ZOOMOUTFACTOR=30
-ZOOM=0
+ZOOMINFACTOR=200
+ZOOMOUTFACTOR=100
+ZOOM=1
 POINTS=1
 GPX=0

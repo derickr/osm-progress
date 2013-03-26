@@ -19,11 +19,22 @@ if ( preg_match("@GPX=(\d+)@", $config, $m ) )
 {
 	$DO_GPX = ( $m[1] == '1' );
 }
-
-define('ZOOMINNESS', 50);
-define('ZOOMOUTNESS', 50);
-
-
+if ( preg_match("@ZOOMINFACTOR=(\d+)@", $config, $m ) )
+{
+	define("ZOOMINNESS", (int) $m[1]);
+}
+else
+{
+	define("ZOOMINNESS", 50);
+}
+if ( preg_match("@ZOOMOUTFACTOR=(\d+)@", $config, $m ) )
+{
+	define("ZOOMOUTNESS", (int) $m[1]);
+}
+else
+{
+	define("ZOOMOUTNESS", 20);
+}
 
 $files = glob($argv[1] . '/*.osc');
 if ( isset( $argv[5] ) )
