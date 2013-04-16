@@ -16,7 +16,7 @@ for i in dumps/*osm.gz; do
 	. ./changes/diff-${NAME2}.env
 
 	if [ ! -f images/a${NAME}.png ]; then
-		NEWSIZE=`stat -c "%s" $i`
+		NEWSIZE=`stat -L -c "%s" $i`
 		if test $NEWSIZE -ne $LASTSIZE; then
 			echo "Loading $i";
 			osm2pgsql -S /home/derick/install/osm2pgsql/default.style --slim -d gis -C 2400 $i
