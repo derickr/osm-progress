@@ -1,10 +1,7 @@
 export EXTRA_PATH=/home/derick/install/osmosis-0.39/bin
 
 # NEVER rm -rf changes/*osc
-#rm -rf changes/*json changes/cache*
-#rm -rf changes/*env changes/*png
-#rm -rf images/x-*
-#rm -rf images/*
+#rm -rf changes/*json changes/cache* changes/*env changes/*png images/*
 
 export LAT1=`cat config.txt | grep "LAT1=" | cut -d "=" -f 2-`
 export LAT2=`cat config.txt | grep "LAT2=" | cut -d "=" -f 2-`

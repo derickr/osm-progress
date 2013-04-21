@@ -32,7 +32,7 @@ for i in images/aparty*.png; do
 		if test "x${IN_FIRST}" = "x$i"; then
 			composite -blend ${OPACITY} /tmp/x.png artwork/title.jpg /tmp/y.png
 		else
-			composite title.png /tmp/x.png /tmp/y.png
+			cp /tmp/x.png /tmp/y.png
 		fi
 		if test "x${IN_LAST}" = "x$i"; then
 			composite -compose Multiply changes/diff$b.png /tmp/y.png /tmp/z.png
