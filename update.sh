@@ -22,4 +22,23 @@ cp party-new.osm dumps/party-$NOW.osm
 gzip -9 dumps/party-$NOW.osm
 mv party-new.osm party.osm
 
+echo
+echo "Checking for time end"
+export TIMEEND=`date +%M -d $TS`
+
+case $TIMEEND in
+	00)
+		cp configuration-15.txt configuration.txt;;
+	15)
+		cp configuration-15.txt configuration.txt;;
+	30)
+		cp configuration-15.txt configuration.txt;;
+	45)
+		cp configuration-15.txt configuration.txt;;
+	*)
+		echo "We need to use the 14 minute variant :-("
+		cp configuration-14.txt configuration.txt;;
+esac
+
+
 echo "DONE X"
