@@ -38,14 +38,12 @@ composite -size 1280x270 -compose blend osm-logo.png \
 	/tmp/temp-end.jpg
 
 convert /tmp/temp-end.jpg \
-	-gravity southwest -stroke none -fill white -font "FreeSerif-Bold" -pointsize 28 -annotate +20+110 "data:" \
-	-gravity southwest -stroke none -fill white -font "FreeSerif-Bold" -pointsize 28 -annotate +20+80 "visuals:" \
-	-gravity southwest -stroke none -fill white -font "FreeSerif-Bold" -pointsize 28 -annotate +20+50 "cover photo:" \
+	-gravity southwest -stroke none -fill white -font "FreeSerif-Bold" -pointsize 28 -annotate +20+80 "data:" \
+	-gravity southwest -stroke none -fill white -font "FreeSerif-Bold" -pointsize 28 -annotate +20+50 "visuals:" \
 	-gravity southwest -stroke none -fill white -font "FreeSerif-Bold" -pointsize 28 -annotate +20+20 "music:" \
-	-gravity southwest -stroke none -fill white -font "FreeSerif-Medium" -pointsize 28 -annotate +170+110 "OpenStreetMap (http://openstreetmap.org) and contributors (ODbL)" \
-	-gravity southwest -stroke none -fill white -font "FreeSerif-Medium" -pointsize 28 -annotate +170+80 "Derick Rethans (http://derickrethans.nl) (cc-by-sa)" \
-	-gravity southwest -stroke none -fill white -font "FreeSerif-Medium" -pointsize 28 -annotate +170+50 "Iron Duke, Mayfair, W1 (http://flic.kr/p/58D5cN) (cc-by-sa)" \
-	-gravity southwest -stroke none -fill white -font "FreeSerif-Medium" -pointsize 28 -annotate +170+20 "Butterfly Tea - Spirit of the Past (http://www.jamendo.com/en/track/252240) (cc-by-sa)" \
+	-gravity southwest -stroke none -fill white -font "FreeSerif-Medium" -pointsize 28 -annotate +170+80 "OpenStreetMap (http://openstreetmap.org) and contributors (ODbL)" \
+	-gravity southwest -stroke none -fill white -font "FreeSerif-Medium" -pointsize 28 -annotate +170+50 "Derick Rethans (http://derickrethans.nl) (cc-by-sa)" \
+	-gravity southwest -stroke none -fill white -font "FreeSerif-Medium" -pointsize 28 -annotate +170+20 "Artifact - Kevin MacLeod (incompetech.com) (cc-by 3.0)" \
 	artwork/end.jpg
 
 cd artwork

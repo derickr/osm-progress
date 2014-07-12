@@ -49,4 +49,4 @@ mencoder "mf://images/x*.jpg" -mf fps=25 -o middle.avi -ovc lavc -lavcopts vcode
 mencoder "mf://artwork/end*.jpg" -mf fps=25 -o end.avi -ovc lavc -lavcopts vcodec=msmpeg4v2:vbitrate=16000
 
 mencoder -oac copy -oac copy -ovc copy -o test.avi title.avi middle.avi end.avi
-mencoder -ovc copy -audiofile /home/derick/media/mp3/cc-by/Olga_Scotland_-_Ernst.mp3 -oac copy test.avi -o progress.avi
+mencoder -ovc copy -audiofile /home/derick/media/mp3/cc-by/Artifact.mp3 -oac copy test.avi -o progress.avi

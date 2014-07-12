@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export JAVACMD_OPTIONS="$JAVACMD_OPTIONS -Djava.net.preferIPv4Stack=true"
+export MINUTELY=`cat config.txt | grep "MINUTELY=" | cut -d "=" -f 2-`
 
 echo "UPDATE"
 
@@ -21,6 +22,13 @@ echo "Processing: $NOW"
 cp party-new.osm dumps/party-$NOW.osm
 gzip -9 dumps/party-$NOW.osm
 mv party-new.osm party.osm
+
+echo
+
+if test $MINUTELY -ne "1"; then
+	echo "DONE X"
+	exit
+fi
 
 echo
 echo "Checking for time end"

@@ -1,5 +1,14 @@
 <?php
-$f = glob("dumps/*osm.gz");
+$glob = 'dumps/*osm.gz';
+$regex = 'dumps/';
+if ($argc == 3) {
+	$glob = $argv[1];
+	$regex = $argv[2];
+}
+echo $glob, "\n";
+echo $regex, "\n";
+
+$f = glob($glob);
 sort( $f );
 $lastSize = 0;
 $lastFile = '';
@@ -10,12 +19,10 @@ foreach ( $f as $file )
 	{
 		unlink( $file );
 		symlink( $lastFile, $file );
-//		echo "unlink( $file );\n";
-//		echo "symlink( $lastFile, $file );\n";
 	}
 	else
 	{
 		$lastSize = $a;
-		$lastFile = preg_replace( '@^dumps/@', '', $file );
+		$lastFile = preg_replace( "@^{$regex}@", '', $file );
 	}
 }

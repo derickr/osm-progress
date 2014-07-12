@@ -21,19 +21,19 @@ for i in dumps/*osm.gz; do
 		if test $FIRST -ne "1"; then
 			FIRST="1";
 			echo "Loading first one: $i";
-			osm2pgsql -S /home/derick/install/osm2pgsql/default.style --slim -d gis -C 2400 $i
+			osm2pgsql -S /home/derick/install/openstreetmap-carto/openstreetmap-carto.style --slim -d gis -C 2400 $i
 			COUNTSAME="1"
 		fi
 		if test $EDITBOXSIZE -ne 91; then
 			echo "Loading $i";
-			osm2pgsql -S /home/derick/install/osm2pgsql/default.style --slim -d gis -C 2400 $i
+			osm2pgsql -S /home/derick/install/openstreetmap-carto/openstreetmap-carto.style --slim -d gis -C 2400 $i
 			COUNTSAME="1"
 		else
 			echo "Skipping $i";
 			COUNTSAME=`echo "${COUNTSAME} + 1" | bc -q`
 		fi
 
-		export MAPNIK_MAP_FILE=/home/derick/install/mapnik/osm.xml
+		export MAPNIK_MAP_FILE=/home/derick/install/openstreetmap-carto/mapnik.osm
 		/home/derick/install/mapnik/generate_image.py ${LAT1} ${LON1} ${LAT2} ${LON2}
 		mv image.png images/a${NAME}.png
 #		export MAPNIK_MAP_FILE=/home/derick/install/mapnik/3dbuil.xml
