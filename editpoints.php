@@ -214,8 +214,8 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 	$dWidth =  WIDTH / ($east - $west);
 	$dHeight = HEIGHT / ($north - $south);
 	// normal points
-	$fadeOff = 15; // 60 AAA
-	$tsMin = $ts - (1 * 86400); // 30 day
+	$fadeOff = 5; // 15 // 60 AAA
+	$tsMin = $ts - (1 * 21600); // 86400// 30 day
 	$tsMax = $ts;
 	$dTime = $fadeOff / ($tsMax - $tsMin);
 	$dSize = 3 / ($tsMax - $tsMin);
@@ -288,18 +288,18 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 			{
 				$c1 = 15 - ($node[2] - $tsMin) * $dTime;
 				$c2 = (int) ($node[2] - $tsMin) * $dTime;
-				imageellipse($img,
+				imagefilledellipse($img,
 					($node[1] - $west) * $dWidth,
 					($north - $node[0]) * $dHeight,
-					10 + $c1, 10 + $c1,
+					(10 + $c1)/3, (10 + $c1)/3,
 					$colour[$node[3] % count( $colorDefs )][$c2]
 				);
-				imageellipse($img,
+/*				imageellipse($img,
 					($node[1] - $west) * $dWidth,
 					($north - $node[0]) * $dHeight,
 					9.5 + $c1, 9.5 + $c1,
 					$colour[$node[3] % count( $colorDefs )][$c2]
-				);
+				);*/
 			}
 			else if ( $node[2] < $tsMin )
 			{
