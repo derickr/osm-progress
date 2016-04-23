@@ -20,7 +20,7 @@ echo
 echo "Processing: $NOW"
 
 cp party-new.osm dumps/party-$NOW.osm
-gzip -9 dumps/party-$NOW.osm
+gzip dumps/party-$NOW.osm
 mv party-new.osm party.osm
 
 echo
