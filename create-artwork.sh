@@ -7,7 +7,7 @@ NAME=`cat config.txt | grep "name=" | sed 's/name=//'`
 
 # TITLE
 convert -size 1280x720 xc:black \
-	-gravity south -stroke white -fill white -font "FreeSans-Medium" -pointsize 88 \
+	-gravity south -stroke white -fill white -font "FreeSans-Medium" -pointsize 72 \
 	-annotate +0+30 "$NAME" \
 	/tmp/title-temp.jpg
 
@@ -24,7 +24,7 @@ cd ..
 
 # END
 convert -background black \
-	-gravity center -stroke white -fill white -font "FreeSans-Medium" -pointsize 88 \
+	-gravity center -stroke white -fill white -font "FreeSans-Medium" -pointsize 72 \
 	-size 600x caption:"$NAME" /tmp/label.jpg
 
 convert -size 1280x720  xc:black /tmp/temp-end.jpg
