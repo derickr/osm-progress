@@ -1,11 +1,12 @@
 #!/bin/bash
 
+export TZ=UTC
 export JAVACMD_OPTIONS="$JAVACMD_OPTIONS -Djava.net.preferIPv4Stack=true"
 export MINUTELY=`cat config.txt | grep "MINUTELY=" | cut -d "=" -f 2-`
 
 echo "UPDATE"
 
-../osmosis-0.39/bin/osmosis --rri --simc --rx party.osm --ac --bb `cat config.txt | grep "bbox=" | cut -d "=" -f 2-` --wx party-new.osm || exit 4
+../osmosis-latest/bin/osmosis --rri --simc --rx party.osm --ac --bb `cat config.txt | grep "bbox=" | cut -d "=" -f 2-` --wx party-new.osm || exit 4
 #../osmosis-0.39/bin/osmosis --rri --simc --rx party.osm --ac --bp file=`cat config.txt | grep "poly=" | cut -d "=" -f 2-` --wx party-new.osm || exit 4
 
 export TS=`cat state.txt | grep timestamp | sed 's/timestamp=//' | sed 's/\\\//g'`
