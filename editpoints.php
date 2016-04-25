@@ -214,8 +214,17 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 	$dWidth =  WIDTH / ($east - $west);
 	$dHeight = HEIGHT / ($north - $south);
 	// normal points
-	$fadeOff = 5; // 15 // 60 AAA
-	$tsMin = $ts - (1 * 21600); // 86400// 30 day
+
+	// Weeks-long video (with a frame every 15 minutes) {
+	$fadeOff = 5;
+	$tsMin = $ts - (1 * 21600); // (6 hour fade)
+	// }
+
+	// Months-long video (with a frame every 12 hours) {
+	$fadeOff = 15;
+	$tsMin = $ts - (60 * 86400); // (60 days fade)
+	// }
+
 	$tsMax = $ts;
 	$dTime = $fadeOff / ($tsMax - $tsMin);
 	$dSize = 3 / ($tsMax - $tsMin);
