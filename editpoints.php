@@ -295,7 +295,7 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 		{
 			if ( $node[2] >= $tsMin && $node[2] <= $tsMax )
 			{
-				$c1 = 15 - ($node[2] - $tsMin) * $dTime;
+				$c1 = 30 - ($node[2] - $tsMin) * $dTime;
 				$c2 = (int) ($node[2] - $tsMin) * $dTime;
 				imagefilledellipse($img,
 					($node[1] - $west) * $dWidth,
