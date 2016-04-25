@@ -11,6 +11,6 @@ export LON2=`cat config.txt | grep "LON2=" | cut -d "=" -f 2-`
 php de-dup.php
 PATH=${EXTRA_PATH}:${PATH}  php changes.php dumps changes
 php de-dup.php 'changes/cache*serialize' 'changes/'
-php -dmemory_limit=2G editpoints.php changes $LAT1 $LON2 $LAT2 $LON1
+php -dmemory_limit=12G editpoints.php changes $LAT1 $LON2 $LAT2 $LON1
 ./mapniks.sh
 ./mkfilm.sh
