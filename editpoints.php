@@ -215,9 +215,14 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 	$dHeight = HEIGHT / ($north - $south);
 	// normal points
 
-	// Weeks-long video (with a frame every 15 minutes) {
+	// Week-long video (with a frame every 15 minutes) {
 	$fadeOff = 5;
 	$tsMin = $ts - (1 * 21600); // (6 hour fade)
+	// }
+
+	// Month-long video (with a frame every 2 hours) {
+	$fadeOff = 25;
+	$tsMin = $ts - (7 * 86400); // (7 days fade)
 	// }
 
 	// Months-long video (with a frame every 12 hours) {
