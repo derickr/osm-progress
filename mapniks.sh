@@ -34,7 +34,7 @@ for i in dumps/*osm.gz; do
 		fi
 
 		export MAPNIK_MAP_FILE=/home/derick/install/openstreetmap-carto/mapnik.osm
-		/home/derick/install/mapnik/generate_image.py ${LAT1} ${LON1} ${LAT2} ${LON2}
+		/home/derick/install/generate_image.py ${LAT1} ${LON1} ${LAT2} ${LON2}
 		mv image.png images/a${NAME}.png
 #		export MAPNIK_MAP_FILE=/home/derick/install/mapnik/3dbuil.xml
 #		/home/derick/install/mapnik/generate_image.py ${LAT1} ${LON1} ${LAT2} ${LON2}

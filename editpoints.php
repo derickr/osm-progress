@@ -214,8 +214,22 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 	$dWidth =  WIDTH / ($east - $west);
 	$dHeight = HEIGHT / ($north - $south);
 	// normal points
-	$fadeOff = 5; // 15 // 60 AAA
-	$tsMin = $ts - (1 * 21600); // 86400// 30 day
+
+	// Week-long video (with a frame every 15 minutes) {
+	$fadeOff = 5;
+	$tsMin = $ts - (1 * 21600); // (6 hour fade)
+	// }
+
+	// Month-long video (with a frame every 2 hours) {
+	$fadeOff = 25;
+	$tsMin = $ts - (7 * 86400); // (7 days fade)
+	// }
+
+	// Months-long video (with a frame every 12 hours) {
+	$fadeOff = 15;
+	$tsMin = $ts - (60 * 86400); // (60 days fade)
+	// }
+
 	$tsMax = $ts;
 	$dTime = $fadeOff / ($tsMax - $tsMin);
 	$dSize = 3 / ($tsMax - $tsMin);
@@ -286,7 +300,7 @@ function renderPoints($points, $bounds, $ts, $filename, $bounds, $gpxPoints )
 		{
 			if ( $node[2] >= $tsMin && $node[2] <= $tsMax )
 			{
-				$c1 = 15 - ($node[2] - $tsMin) * $dTime;
+				$c1 = 30 - ($node[2] - $tsMin) * $dTime;
 				$c2 = (int) ($node[2] - $tsMin) * $dTime;
 				imagefilledellipse($img,
 					($node[1] - $west) * $dWidth,
