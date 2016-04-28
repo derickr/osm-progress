@@ -4,6 +4,16 @@
 mkdir -p artwork
 
 NAME=`cat config.txt | grep "name=" | sed 's/name=//'`
+TITLE_OVERLAY=`cat config.txt | grep "TITLE_OVERLAY=" | sed 's/TITLE_OVERLAY=//'`
+
+# OVERLAY
+if test "x${TITLE_OVERLAY}" = "x1";
+then
+	convert -size 1280x720 xc:transparent \
+		-gravity SouthEast -stroke black -fill white -font "FreeSans-Medium" -pointsize 32 \
+		-annotate +10+10 "$NAME" \
+		artwork/overlay.png
+fi
 
 # TITLE
 convert -size 1280x720 xc:black \

@@ -1,4 +1,4 @@
-export EXTRA_PATH=/home/derick/dev/osmosis-latest/bin
+export EXTRA_PATH=/storage1/osm/videos/osmosis-latest/bin
 
 # NEVER rm -rf changes/*osc
 #rm -rf changes/*json changes/cache* changes/*env changes/*png images/*

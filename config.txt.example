@@ -14,3 +14,9 @@ ZOOM=1
 POINTS=1
 GPX=0
 MINUTELY=1
+# Setting this to "1" means that we don't use a title for fading, but just
+# from/to black.
+BLACK=0
+# If title overlay is set, we overlay in the right hand bottom corner the
+# title. This is generated from NAME through create-artwork.sh
+TITLE_OVERLAY=0
