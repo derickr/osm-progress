@@ -17,12 +17,12 @@ SETUP
    the bounding box for "edits" (through LAT1, LAT2, LON1, LON2)
 2. Run ./setup.sh
 3. Get a matching state file from
-   http://planet.openstreetmap.org/replication/minute
+   https://planet.openstreetmap.org/replication/minute
    Typically one that's a day from before the time for the planet file and
    save it as "state.txt"
 4. Edit "configuration.txt" and make it:
 
-	baseUrl=http://planet.openstreetmap.org/replication/minute
+	baseUrl=https://planet.openstreetmap.org/replication/minute
 	maxInterval = 900
 
 5. run "./update.sh" once to make check whether it works.
